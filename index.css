@@ -1,0 +1,434 @@
+* {
+  margin: 0;
+  padding: 0;
+} 
+
+html, body {
+  height: 100%;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+body {
+  font-family: Arial;
+  line-height: 1.6;
+  background-color: #f4f4f4;
+}
+
+nav {
+  position: fixed;
+  width:100%;
+  top:0; 
+  z-index: 1000;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); 
+}
+
+.nav-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: #003366;
+  padding: 10px 20px;
+}
+
+.logo img {
+  width: 12em;
+  height: auto;
+}
+
+.nav-links {
+  list-style: none;
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+}
+
+nav ul li a {
+  text-decoration: none;
+  color: white;
+  padding: 15px 20px;
+  font-size: 18px;
+  display:inline-block;
+  position:relative;
+}
+
+nav ul li a:hover {
+  background-color: #002244; 
+  border-radius: 5px;
+}
+
+/* dropdown directly below menu link */
+.dropdown-menu {
+  position: relative;
+}
+
+.dropdown-menu:hover > a,
+.dropdown-menu:focus-within > a {
+  background-color: #002244;
+  border-radius: 5px;
+  z-index:10;
+}
+
+.dropdown-menu ul {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  background-color: #003366; 
+  list-style: none;
+  display: none;
+  min-width: 100%;
+  border-radius: 5px;
+  width: max-content;
+  z-index: 9;
+}
+
+.dropdown-menu ul li a {
+  color: white;
+  font-size: 16px;
+  padding: 5px 10px;
+  display: block;
+}
+
+.dropdown-menu:hover ul {
+  display: block;
+}
+
+.dropdown-menu ul li a:hover {
+  background-color: #002244;
+}
+
+header {
+  position: relative;
+  background-image: url('uoft.jpeg'); 
+  background-size: cover;
+  color: white;
+  padding: 200px 20px;
+  text-align: center;
+  background-position: center;
+  
+}
+
+header h1 {
+  font-size: 48px;
+  margin-bottom: 10px;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.6);
+  opacity: 0;
+  animation: fadeIn 0.8s ease-in-out forwards;
+}
+
+header p {
+  font-size: 18px;
+  color: #003366;
+  background-color: #f4f4f4;
+  border-radius: 10px;
+  opacity: 0;
+  padding:0.5em;
+  animation: fadeIn 0.8s ease-in-out forwards;
+}
+
+/* main content */
+.home {
+  padding: 40px 20px;
+  margin: 20px auto;
+  max-width: 900px;
+  border-radius: 10px;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+  animation: fadeIn 0.8s ease-in-out forwards;
+}
+
+.home h2 {
+  font-size: 28px;
+  margin-bottom: 10px;
+}
+
+.home p {
+  font-size: 16px;
+  margin-bottom: 15px;
+}
+
+.home h3 {
+  font-size: 20px;
+  margin-bottom: 5px;
+}
+
+.professor-details {
+  display: flex;
+  align-items: flex-start; 
+  justify-content: flex-start;
+  gap: 20px; 
+  flex-wrap: wrap; 
+  max-width: 100%; 
+}
+
+.professor-photo {
+  flex-shrink: 0; 
+  width: 150px;
+  height: 150px;
+}
+
+.professor-photo img {
+  width: 100%;
+  height: 100%;
+  border-radius: 20%;
+  object-fit: cover;
+}
+
+.professor-text {
+  flex-grow: 1;
+  border: 2px solid #003B49;
+  border-radius: 5px;
+  padding: 20px;
+  box-sizing: border-box; 
+  max-width: calc(100% - 170px); 
+}
+
+.professor-text p {
+  font-size: 16px;
+  line-height: 1.5;
+  margin-bottom: 10px;
+}
+
+@media (max-width: 800px) {
+  .professor-details {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .professor-text {
+    max-width: 100%; 
+    text-align: center;
+  }
+}
+
+main {
+  flex:1;
+}
+
+footer {
+  position: relative;
+  background-color: #003366; 
+  color: white;
+  width: 100%;
+  max-width: 100%;
+  margin-bottom: 0px;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+  box-sizing: border-box;
+  padding:1em;
+  
+  .linktoschool a{
+    color: white;
+  }
+
+  img {
+    width:12em;
+    height:auto;
+  }
+}
+
+/* adjust to smaller screens */
+@media (max-width: 800px) {
+  footer {
+    display:flex;
+    flex-direction: column;
+    justify-content:center;
+    text-align: center;
+
+    .linktoschool a{
+      text-align: center;
+    }
+  }
+}
+
+/* adjust for larger screens */
+@media (min-width: 800px) {
+  /* Footer */
+  footer {
+    display:flex;
+    flex-direction: row;
+    justify-content: space-between;
+  }
+}
+
+/* mobile hamburger menu */
+#menu-toggle {
+  display: none;
+}
+
+.menu-icon {
+  display: none;
+  font-size: 30px;
+  color: white;
+  cursor: pointer;
+}
+
+@media (max-width: 1250px) {
+  nav {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: #003366;
+    padding: 10px 0;
+  }
+  .nav-container {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .menu-icon {
+    display: block;
+  }
+
+  .nav-links {
+    display: none;
+    flex-direction: column;
+    width: 100%;
+    background-color: #003366;
+  }
+
+  #menu-toggle:checked + .menu-icon + .nav-links {
+    display: flex;
+  }
+
+  .nav-links li {
+    width: 100%;
+    text-align: left;
+  }
+
+  .nav-links li a {
+    display: block;
+    padding: 10px;
+    font-size: 18px;
+  }
+
+  .dropdown-menu ul {
+    position: static;
+    display: none;
+  }
+
+  .dropdown-menu:hover ul {
+    display: block;
+  }
+
+  .dropdown-menu ul li a {
+    display: block;
+    padding: 10px;
+    font-size: 16px;
+    color: white;
+    background-color: #012a53; 
+    transition: background-color 0.3s ease; 
+    border-radius: 5px;
+  }
+
+  .dropdown-menu ul li a:hover {
+    background-color: #002244; 
+    border-radius: 5px;
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* night mode slider button */
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 60px;
+  height: 34px;
+}
+
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #aea7a7;
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 26px;
+  width: 26px;
+  left: 4px;
+  bottom: 4px;
+  background-color: white;
+  -webkit-transition: .4s;
+  transition: .4s;
+  border-color: #002244;
+
+}
+
+input:checked + .slider {
+  background-color: #002244;
+}
+
+input:focus + .slider {
+  box-shadow: 0 0 1px #003366;
+}
+
+/* Rounded sliders */
+.slider.round {
+  border-radius: 34px;
+}
+
+.slider.round:before {
+  border-radius: 50%;
+}
+
+.toggle-button {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  cursor: pointer;
+  font-size: 24px;
+  background: #ddd;
+  padding: 10px;
+  border-radius: 50%;
+}
+
+.nightmode-toggle {
+  color: white;
+}
+
+:has(#nightmode-toggle:checked) body {
+  background-color: #003366;
+  color: white;
+
+  .team-member {
+    background: #002244;
+  }
+
+  .assignment-header, .tests-header, .labs-header, .lectures-header, .assignment-name, .test-name {
+    background: #002244;
+
+  }
+
+  .lectures-item, .lectures-grid, .lectures-overview, .labs-grid,.labs-item, .labs-overview, 
+  .tests-grid, .test, .tests-item, .tests-detail-item, 
+  .assignment-grid,.assignment-item, .assignment-item a,
+  .news-item, .news-grid, .feedback-overview, 
+  .feedback-form-container{
+    background-color: #003366;
+  }
+  header p, .feedback-form-container textarea, .assignment-handout {
+    background-color: #003366;
+    color: white;
+  }
+}

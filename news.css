@@ -1,0 +1,46 @@
+@import url(index.css);
+
+.news-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 40px 0;
+    opacity: 0; 
+    animation: fadeIn 0.8s ease-in-out forwards;
+}
+
+.news-grid {
+    display: grid;
+    grid-template-columns: 1fr 8fr;
+    gap: 15px;
+    width: 80%;
+    max-width: 900px;
+    text-align: center;
+    background-color: rgba(255, 255, 255, 0.9);
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.news-header {
+    font-weight: bold;
+    background-color: #002244;
+    color: white;
+    padding: 10px;
+    border-radius: 5px;
+}
+
+.news-item {
+    padding: 10px;
+    background-color: #f4f4f4;
+    border-radius: 5px;
+}
+
+@keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
