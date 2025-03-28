@@ -8,6 +8,7 @@ function deactivate  -d "Exit virtual environment and return to normal shell env
         set -e _OLD_VIRTUAL_PATH
     end
     if test -n "$_OLD_VIRTUAL_PYTHONHOME"
+        set -gx PYTHONHOME $_OLD_VIRTUAL_PYTHONHOME
         set -e _OLD_VIRTUAL_PYTHONHOME
     end
 
