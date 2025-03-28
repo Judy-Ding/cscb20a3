@@ -1,10 +1,20 @@
 {% extends "template.html" %}
 
-{% block navbar %}
-  <li><a href="index.html">Home</a></li>
-  <li><a href="anonfeedback.html">Anon Feedback</a></li>
-  <li><a href="anonfeedback.html">Marks</a></li>
-{% endblock %}
+{% block s_or_i_homepage %}
+  <li><a href="{{ url_for('s_homeafterlogin') }}">Home</a></li>
+{% endblock%}
+
+{% block s_or_i_feedback %}
+  <li><a href="{{ url_for('s_anonfeedback') }}">Anon Feedback</a></li>
+{% endblock%}
+
+{% block s_or_i_marks %}
+  <li><a href="{{ url_for('s_marks') }}">Marks</a></li>
+{% endblock%}
+
+{% block s_or_i_notes %}
+  <li><a href="{{ url_for('s_lectures') }}">Lecture Notes</a></li>
+{% endblock%}
 
 {% block pageheader %}
   <h1>Welcome to CSCB20 - Introduction to Databases and Web Applications</h1> 

@@ -1,0 +1,57 @@
+{% extends "template.html" %}
+
+{% block s_or_i_homepage %}
+  <li><a href="{{ url_for('s_homeafterlogin') }}">Home</a></li>
+{% endblock%}
+
+{% block s_or_i_feedback %}
+  <li><a href="{{ url_for('s_anonfeedback') }}">Anon Feedback</a></li>
+{% endblock%}
+
+{% block s_or_i_marks %}
+  <li><a href="{{ url_for('s_marks') }}">Marks</a></li>
+{% endblock%}
+
+{% block s_or_i_notes %}
+  <li><a href="{{ url_for('s_lectures') }}">Lecture Notes</a></li>
+{% endblock%}
+
+{% block pageheader %}
+  <h1>Anonymous Feedback</h1> 
+{% endblock %}
+
+{% block content %}
+  <section id="feedback-form">
+    <h2>Submit Anonymous Feedback</h2>
+    <form action="/submit_feedback" method="post">
+      <label for="instructor">Select Instructor:</label>
+      <select id="instructor" name="instructor" required>
+        {% for instructor in instructors %}
+        <option value="{{ instructor.name }}">{{ instructor.name }}</option>
+        {% endfor %}
+      </select>
+      
+      <div>
+        <p>What do you like about the instructor's teaching?</p>
+        <textarea id="like-teaching" name="like-teaching" required></textarea>
+      </div>
+      
+      <div>
+        <p>What do you recommend the instructor to do to improve their teaching?</p>
+        <textarea id="improve-teaching" name="improve-teaching" required></textarea>
+      </div>
+
+      <div>
+        <p>What do you like about the labs?</p>
+        <textarea id="like-labs" name="like-labs" required></textarea>
+      </div>
+
+      <div>
+        <p>What do you recommend the lab instructors to do to improve their lab teaching?</p>
+        <textarea id="improve-labs" name="improve-labs" required></textarea>
+      </div>
+
+      <button type="submit">Submit Feedback</button>
+    </form>
+  </section>
+{% endblock content %}

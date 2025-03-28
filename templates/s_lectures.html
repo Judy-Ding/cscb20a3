@@ -1,0 +1,33 @@
+{% extends "template.html" %}
+
+{% block s_or_i_homepage %}
+  <li><a href="{{ url_for('s_homeafterlogin') }}">Home</a></li>
+{% endblock%}
+
+{% block s_or_i_feedback %}
+  <li><a href="{{ url_for('s_anonfeedback') }}">Anon Feedback</a></li>
+{% endblock%}
+
+{% block s_or_i_marks %}
+  <li><a href="{{ url_for('s_marks') }}">Marks</a></li>
+{% endblock%}
+
+{% block s_or_i_notes %}
+  <li><a href="{{ url_for('s_lectures') }}">Lecture Notes</a></li>
+{% endblock%}
+
+{% block pageheader %}
+  <h1>Lectures</h1>
+  <p class="overview">
+      Lecture Schedule:
+      Please print and bring these notes/worksheets to class.
+  </p>
+{% endblock %}
+
+{% block content %}
+  <div class="lectures-grid">
+    <div class="lectures-header">Week</div>
+    <div class="lectures-header">Topic</div>
+    <div class="lectures-header">Lecture Materials</div>
+  </div>
+{% endblock content %}
