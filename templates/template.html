@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+
   {% if pagename %}
     <title>{{ pagename }}</title>
   {% else %}
@@ -15,7 +16,7 @@
   <nav>
     <div class="nav-container">
       <div class="logo">
-        <img src="{{ url_for('static', filename='images/UTSClogo.png') }}" alt="UTSC Logo">
+        <img src="{{ url_for('static', filename='images/UTSClogo.png') }}" alt="UTSCLogo">
       </div>
   
       <!-- mobile hamburger menu button -->
@@ -23,11 +24,51 @@
       <label for="menu-toggle" class="menu-icon">&#9776;</label>
   
       <!-- navigation bar links -->
+      {% if session.name %}
       <ul class="nav-links">
+        {% block s_or_i_homepage %}
+        {% endblock%}
+  
+        <li><a href="{{ url_for('static', filename='pdf/Syllabus.pdf') }}">Syllabus</a></li>
+  
+        <li class="dropdown-menu">
+          <a href="#">Course Communications</a>
+          <ul>
+            <li><a href="https://piazza.com/class/m5fmz9kzjo83yk" target="_blank">Piazza</a></li>
+            {% block s_or_i_feedback %}
+            {% endblock%}
+          </ul>
+        </li>
+  
+        <li class="dropdown-menu">
+          <a href="#">Assessments</a>
+          <ul>
+            {% block s_or_i_marks %}
+            {% endblock%}
 
-        <!--need to write the nav bar details for all the pages except from homebeforelogin-->
-        {% block navbar %}
-        {% endblock %}
+            <!--hilary needs to add the update mark tab-->
+            {% block i_updatemarks %}
+            {% endblock%}
+
+            <li><a href="https://markus2.utsc.utoronto.ca" target="_blank">Markus</a></li>
+          </ul>
+        </li>
+  
+        <li class="dropdown-menu">
+            {% block s_or_i_notes %}
+            {% endblock%}
+        </li>
+
+        <li class="dropdown-menu">
+          {% block i_updatenotes %}
+          {% endblock%}
+        </li>
+
+        {% else %}
+          <!-- mo needs to rewrite it as  <li><a href="{{ url_for('index') }}">Home</a></li>  -->
+          {% block homebeforelogin %}
+          {% endblock%}
+        {% endif %}
 
         <!-- night mode toggle switch -->
         <li class="nightmode-toggle">&#9790;
