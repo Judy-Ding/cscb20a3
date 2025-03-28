@@ -100,7 +100,7 @@ nav ul li a:hover {
 
 header {
   position: relative;
-  background-image: url('uoft.jpeg'); 
+  background-image: url('/static/images/uoft.jpeg');
   background-size: cover;
   color: white;
   padding: 200px 20px;
