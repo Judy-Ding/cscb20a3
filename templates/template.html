@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  {% if pagename %}
+    <title>{{ pagename }}</title>
+  {% else %}
+    <title>Home Page</title>
+  {% endif %}
+</head>
+
+<body>
+  <nav>
+    <div class="nav-container">
+      <div class="logo">
+        <img src="{{ url_for('static', filename='images/UTSClogo.png') }}" alt="UTSC Logo">
+      </div>
+  
+      <!-- mobile hamburger menu button -->
+      <input type="checkbox" id="menu-toggle">
+      <label for="menu-toggle" class="menu-icon">&#9776;</label>
+  
+      <!-- navigation bar links -->
+      <ul class="nav-links">
+
+        <!--need to write the nav bar details for all the pages except from homebeforelogin-->
+        {% block navbar %}
+        {% endblock %}
+
+        <!-- night mode toggle switch -->
+        <li class="nightmode-toggle">&#9790;
+          <label class="switch">
+            <input type="checkbox" id="nightmode-toggle">
+            <span class="slider round"></span>
+          </label>
+        </li>
+      </ul>
+    </div>
+  </nav>
+  
+  <!--header needs to be changed on every signle child html-->
+  <header>
+    {% block pageheader %}
+    {% endblock %}
+  </header>
+
+  <!--main body part needs to be changed on every signle child html-->
+  <main class="home">
+    {% block content %}
+    {% endblock %}
+  </main>
+
+  <footer>
+    <p class="linktoschool"><a href="https://web.cs.toronto.edu/">   Department of Computer Science, University of Toronto</a><br>Designed and built with care by Judy Ding, Hillary Tse, and Monica Vergara for CSCB20 &copy; 2025</p>
+    <p><img src="{{ url_for('static', filename='images/UTSClogo.png') }}" alt="UTSCLogo"></p>
+  </footer>
+</body>
+</html>
