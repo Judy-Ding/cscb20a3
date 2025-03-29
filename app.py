@@ -277,3 +277,4 @@ def get_identity_by_email(utor_email):
 
 if __name__ == '__main__':
     app.run(debug=True)
+    #to put the two tests
