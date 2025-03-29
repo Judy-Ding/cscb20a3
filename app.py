@@ -1,13 +1,12 @@
-from flask import Flask, render_template, request, redirect, url_for, flash, session
+from flask import Flask, request, jsonify, render_template, url_for, flash, redirect, request, session
 from flask_sqlalchemy import SQLAlchemy
-from datetime import datetime, timedelta
 from flask_bcrypt import Bcrypt
-app = Flask(__name__)
+import re
 
-app.config['SECRET_KEY'] = 'e3f5894c596f4342124d351a4d981f0f60f01ea18a86976ae619c15893e592a9'
+app = Flask(__name__)
+app.config['SECRET_KEY'] = 'secret_key'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///a3db.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(minutes = 10)
 
 # Initialize extensions
 db = SQLAlchemy(app)
@@ -18,7 +17,6 @@ with app.app_context():
     db.create_all()
     print("Database tables created")
 
-#--------------DATABASE---------------------------------------------------------
 # ------------------------------------------------------------------------------
 class anonyFeedback(db.Model):
     __tablename__ = "anonyFeedback"
@@ -29,8 +27,6 @@ class anonyFeedback(db.Model):
     like_labs = db.Column(db.Text)
     improvement_labs = db.Column(db.Text)
     viewed_status = db.Column(db.Text)
-
-    user_id = db.Column(db.Integer, db.ForeignKey('userInfo.ID'), nullable=False) # Foreign key
 
     def __repr__(self):
         return f"anonyFeedback('{self.feedbackID}', '{self.instructorID}')"
@@ -74,37 +70,109 @@ class User(db.Model):
     password = db.Column(db.String(60), nullable=False)
     user_type = db.Column(db.String(20), nullable=False)
 
-    # Define the relationship using backref for bidirectional access
-    studentMarks = db.relationship('studentMarks', backref='user', lazy=True)
-
     def __repr__(self):
         return f"User('{self.ID}', '{self.name}')"
 
     def verify_password(self, password):
         return bcrypt.check_password_hash(self.password, password)
 
+#-----------------------------
 
-#--------------ROUTE APPLICATIONS---------------------------------------------------------
+@app.route('/test_db')
+def test_db():
+    try:
+        db.session.query(User).first()
+        return "Connected to the database successfully!"
+    except Exception as e:
+        return "An error occurred when connecting to the database: " + str(e)
 
+@app.route('/')
+def index():
+    return render_template('index.html')
 
+@app.route('/register', methods=['GET', 'POST'])
+def register():
+    if request.method == 'GET':
+        return render_template('register.html')
+    else:
+        university_id = request.form.get('university_id')
+        name = request.form.get('name')
+        utor_email = request.form.get('utor_email')
+        password = bcrypt.generate_password_hash(request.form['password']).decode('utf-8')
+        user_type = request.form.get('user_type')
 
+        registration_details = (
+            university_id,
+            name,
+            utor_email,
+            password,
+            user_type
+        )
 
-#STUDENT INTERFACE SECTOR
-@app.route('/template')
-def template():
-    pagename='Test'
-    return render_template('template.html', pagename=pagename)
+        try:
+            add_users(registration_details)
+            flash('Registration Successful! Please login now:')
+            return redirect(url_for('login'))
+        except ValueError as e:
+            flash(str(e))
+            return render_template('register.html')
 
-@app.route('/') #default page you want to do certain things => this needs to be changed to monica's default login page
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    if request.method == 'GET':
+        return render_template('login.html')
+
+    # POST: Process login form
+    utor_email = request.form['utor_email']
+    password = request.form['password']
+    user = User.query.filter_by(utor_email=utor_email).first()
+
+    if not user or not bcrypt.check_password_hash(user.password, password):
+        flash('Invalid login details. Please try again.', 'error')
+        return render_template('login.html')
+
+    # Successful login, starts the user's session
+    session['utor_email'] = utor_email
+    session['user_id'] = user.ID
+    session['user_type'] = user.user_type
+    session['user_name'] = user.name
+    session.permanent = True
+
+    # Redirect based on user type
+    if user.user_type == 'instructor':
+        return redirect(url_for('i_homeafterlogin'))
+    elif user.user_type == 'student':
+        return redirect(url_for('s_homeafterlogin'))
+    else:
+        flash('User type not recognized.', 'error')
+        return redirect(url_for('login'))
+
+@app.route('/logout')
+def logout():
+    session.clear()
+    return redirect(url_for('index'))
+
+@app.route('/i_homeafterlogin')
+def i_homeafterlogin():
+    if 'user_type' not in session or session['user_type'] != 'instructor':
+        return redirect(url_for('login'))
+    pagename = 'i_homeafterlogin'
+    return render_template('i_homeafterlogin.html', pagename=pagename)
+
 @app.route('/s_homeafterlogin')
 def s_homeafterlogin():
+    if 'user_type' not in session or session['user_type'] != 'student':
+        return redirect(url_for('login'))
     pagename = 's_homeafterlogin'
-    return render_template('s_homeafterlogin.html', pagename = pagename)
+    return render_template('s_homeafterlogin.html', pagename=pagename)
 
-@app.route('/s_anonfeedback', methods = ['GET', 'POST'])
+@app.route('/s_anonfeedback', methods=['GET', 'POST'])
 def s_anonfeedback():
+    if 'user_type' not in session or session['user_type'] != 'student':
+        return redirect(url_for('login'))
+
     if request.method == 'GET':
-        instructors = User.query.filter_by(user_type='Instructor').all()
+        instructors = User.query.filter_by(user_type='instructor').all()
         return render_template('s_anonfeedback.html', pagename='s_anonfeedback', instructors=instructors)
     else:
         anonyFeedback_details = (
@@ -115,45 +183,61 @@ def s_anonfeedback():
             request.form['improve-labs']
         )
         add_anonfeedback(anonyFeedback_details)
-        return render_template('s_anonfeedback.html', pagename='s_anonfeedback')
+        flash('Feedback submitted successfully!', 'success')
+        return redirect(url_for('s_anonfeedback'))
 
 def add_anonfeedback(anonyFeedback_details):
+    instructor = User.query.filter_by(name=anonyFeedback_details[0], user_type='instructor').first()
+    if not instructor:
+        print('Instructor not found!')
+        return
+    
     new_feedback = anonyFeedback(
-        instructorID=anonyFeedback_details[0],
+        instructorID=instructor.ID,
         like_teaching=anonyFeedback_details[1],
         improvement_teaching=anonyFeedback_details[2],
         like_labs=anonyFeedback_details[3],
         improvement_labs=anonyFeedback_details[4],
         viewed_status='Not Viewed',
-        user_id=session.get('user_id')
     )
     db.session.add(new_feedback)
     db.session.commit()
 
 @app.route('/s_marks')
-#session
 def s_marks():
+    if 'user_type' not in session or session['user_type'] != 'student':
+        return redirect(url_for('login'))
     pagename = 's_marks'
-    return render_template('s_anonfeedback.html', pagename = pagename)
+    # Add logic to fetch student marks here
+    return render_template('s_marks.html', pagename=pagename)
 
 @app.route('/s_lectures')
 def s_lectures():
+    if 'user_type' not in session or session['user_type'] != 'student':
+        return redirect(url_for('login'))
     pagename = 's_lectures'
-    return render_template('s_lectures.html', pagename = pagename)
+    return render_template('s_lectures.html', pagename=pagename)
 
-@app.route('/s_calendar')
-def s_calendar():
-    pagename = 's_calendar'
-    return render_template('s_calendar.html', pagename = pagename)
+def add_users(registration_details):
+    university_id, name, utor_email, password, user_type = registration_details
+    existing_user = User.query.filter_by(university_id=university_id).first()
 
-@app.route('/s_courseteam')
-def s_courseteam():
-    pagename = 's_courseteam'
-    return render_template('s_courseteam.html', pagename = pagename)
+    if existing_user is None:
+        new_user = User(
+            university_id=university_id,
+            name=name,
+            utor_email=utor_email,
+            password=password,
+            user_type=user_type
+        )
+        db.session.add(new_user)
+        db.session.commit()
+    else:
+        raise ValueError(f"A user with the ID {university_id} already exists.")
+
+def get_identity_by_email(utor_email):
+    current_user = User.query.filter_by(utor_email=utor_email).first()
+    return current_user.user_type
 
 if __name__ == '__main__':
-        app.run(debug = True)
-
-
-
-
+    app.run(debug=True)

@@ -1,32 +1,13 @@
 {% extends "template.html" %}
 
-{% block s_or_i_homepage %}
-  <li><a href="{{ url_for('s_homeafterlogin') }}">Home</a></li>
-{% endblock%}
-
-{% block s_or_i_feedback %}
-  <li><a href="{{ url_for('s_anonfeedback') }}">Anon Feedback</a></li>
-{% endblock%}
-
-{% block s_or_i_marks %}
-  <li><a href="{{ url_for('s_marks') }}">Marks</a></li>
-{% endblock%}
-
-{% block s_or_i_notes %}
-  <li><a href="{{ url_for('s_lectures') }}">Lecture Notes</a></li>
-{% endblock%}
 
 {% block pageheader %}
-  {% if session['user_type'] == 'student' %}
-    <h1>Welcome {{ session.get('user_name', 'Student') }}, click <a href="{{ url_for('s_marks') }}">here</a> to see your current grades.</h1>
-  {% else %}
-    <h1>Welcome to CSCB20 - Introduction to Databases and Web Applications</h1>
-  {% endif %}
+  <h1>Welcome to CSCB20 - Introduction to Databases and Web Applications</h1> 
 {% endblock %}
 
 {% block content %}
-    <section id="home">
-      <h2>Course Overview</h2>
+  <section id="home">
+    <h2>Course Overview</h2>
       <p>This course introduces the fundamentals of databases. We will cover topics such as relational models, SQL, database design, and more.<a href="https://utsc.calendar.utoronto.ca/search-courses"> Details can be found here.</a></p>
 
       <h3>Prerequisite</h3>
@@ -47,5 +28,6 @@
               <p>Course: Friday 9:00-11:00 (Location: IC493)</p>
           </div>
       </div>
-    </section>
+  </section>
 {% endblock content %}
+

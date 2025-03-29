@@ -21,9 +21,18 @@
 {% endblock %}
 
 {% block content %}
+  {% with messages = get_flashed_messages() %}
+    {% if messages %}
+      <div class="flash-messages">
+        {% for message in messages %}
+          <div class="flash">{{ message }}</div>
+        {% endfor %}
+      </div>
+    {% endif %}
+  {% endwith %}
   <section id="feedback-form">
     <h2>Submit Anonymous Feedback</h2>
-    <form action="/submit_feedback" method="post">
+    <form action="/s_anonfeedback" method="post">
       <label for="instructor">Select Instructor:</label>
       <select id="instructor" name="instructor" required>
         {% for instructor in instructors %}
@@ -51,7 +60,7 @@
         <textarea id="improve-labs" name="improve-labs" required></textarea>
       </div>
 
-      <button type="submit">Submit Feedback</button>
+      <button type="submit" class = 'btn-feedback'>Submit Feedback</button>
     </form>
   </section>
 {% endblock content %}

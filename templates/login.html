@@ -1,0 +1,41 @@
+{% extends "template.html" %}
+
+
+{% block pageheader %}
+  <h1>Welcome to CSCB20 - Introduction to Databases and Web Applications</h1> 
+{% endblock %}
+
+{% block content %}
+
+
+  <!-- New login/register container -->
+  <section class="login-container">
+    <div class="login-box">
+      <h2>Student/Instructor ID Login</h2>
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="flash-message {{ category }}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+      {% endwith %}
+
+      <form class="login-form" action="{{ url_for('login') }}" method="POST">
+        <div class="form-group">
+          <label for="ID">UToronto Email:</label>
+          <input type="utor_email" id="utor_email" name="utor_email">
+        </div>
+        <div class="form-group">
+          <label for="password">Password:</label>
+          <input type="password" id="password" name="password" required>
+        </div>
+        <button type="submit" class="btn-login">Log In</button>
+        <a href="{{ url_for('index') }}" class="btn-back">Back to Course Overview</a>
+
+      </form>
+    </div>
+  </section>
+{% endblock content %}
+
