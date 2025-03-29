@@ -486,6 +486,46 @@ input:focus + .slider {
     transition: background-color 0.3s;
   }
   
+  .marks-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    gap: 10px;
+    margin-top: 20px;
+  }
+  
+  .header {
+    font-weight: bold;
+    background-color: #f0f0f0;
+    padding: 10px;
+  }
+  
+  .marks-grid div {
+    padding: 10px;
+    border: 1px solid #ccc;
+  }
+  
+  button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    cursor: pointer;
+    border-radius: 5px;
+  }
+  
+  button:hover {
+    background-color: #0056b3;
+  }
+  
+  textarea {
+    width: 100%;
+    height: 80px;
+    margin-top: 10px;
+  }
+  
+  .remark-form {
+    margin-top: 10px;
+  }
   
   .flash-messages {
     margin-bottom: 20px;

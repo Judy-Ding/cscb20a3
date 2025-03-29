@@ -203,13 +203,49 @@ def add_anonfeedback(anonyFeedback_details):
     db.session.add(new_feedback)
     db.session.commit()
 
-@app.route('/s_marks')
+@app.route('/s_marks', methods=['GET'])
 def s_marks():
     if 'user_type' not in session or session['user_type'] != 'student':
         return redirect(url_for('login'))
-    pagename = 's_marks'
-    # Add logic to fetch student marks here
-    return render_template('s_marks.html', pagename=pagename)
+
+    student_id = session.get('user_id')
+    student_name = session.get('user_name')
+    
+    marks = studentMarks.query.filter_by(ID=student_id).all()
+    remark_requests = {req.assessment: req for req in regradeReq.query.filter_by(student_name=student_name).all()}
+
+    return render_template('s_marks.html', marks=marks, remark_requests=remark_requests)
+
+@app.route('/submit_remark', methods=['POST'])
+def submit_remark():
+    if 'user_type' not in session or session['user_type'] != 'student':
+        return redirect(url_for('login'))
+
+    student_name = session.get('user_name')
+    assessment_type = request.form.get('assessment_type')
+    reason = request.form.get('reason')
+
+    if not reason.strip():
+        flash('Remark reason cannot be empty.', 'error')
+        return redirect(url_for('s_marks'))
+
+    existing_request = regradeReq.query.filter_by(student_name=student_name, assessment=assessment_type).first()
+    if existing_request:
+        flash('You have already submitted a remark request for this assessment.', 'warning')
+        return redirect(url_for('s_marks'))
+
+    new_request = regradeReq(
+        student_name=student_name,
+        assessment=assessment_type,
+        reason=reason,
+        remark_status='Pending',
+        remark_action='None'
+    )
+    db.session.add(new_request)
+    db.session.commit()
+
+    flash('Remark request submitted successfully!', 'success')
+    return redirect(url_for('s_marks'))
 
 @app.route('/s_lectures')
 def s_lectures():
