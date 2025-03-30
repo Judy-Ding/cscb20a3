@@ -75,6 +75,18 @@ class User(db.Model):
 
     def verify_password(self, password):
         return bcrypt.check_password_hash(self.password, password)
+    
+# ------------------------------------------------------------------------------
+class lectureNotes(db.Model):
+    __tablename__ = 'lectureNotes'
+    id = db.Column(db.Integer, primary_key=True)
+    week = db.Column(db.Integer)
+    topic = db.Column(db.String(100))
+    url = db.Column(db.String(200))
+
+    def __repr__(self):
+        return f"lectureNotes('{self.week}', '{self.topic}', '{self.url}')"
+
 
 #-----------------------------
 
@@ -203,56 +215,41 @@ def add_anonfeedback(anonyFeedback_details):
     db.session.add(new_feedback)
     db.session.commit()
 
-@app.route('/s_marks', methods=['GET'])
+@app.route('/s_marks')
 def s_marks():
-    if 'user_type' not in session or session['user_type'] != 'student':
-        return redirect(url_for('login'))
-
     student_id = session.get('user_id')
-    student_name = session.get('user_name')
+
+    if not student_id:
+        flash('Please log in first.', 'warning')
+        return redirect(url_for('login'))
     
     marks = studentMarks.query.filter_by(ID=student_id).all()
-    remark_requests = {req.assessment: req for req in regradeReq.query.filter_by(student_name=student_name).all()}
-
+    remark_requests = {request.assessment: request for request in regradeReq.query.all()}
     return render_template('s_marks.html', marks=marks, remark_requests=remark_requests)
 
 @app.route('/submit_remark', methods=['POST'])
 def submit_remark():
-    if 'user_type' not in session or session['user_type'] != 'student':
-        return redirect(url_for('login'))
-
-    student_name = session.get('user_name')
-    assessment_type = request.form.get('assessment_type')
+    assessment = request.form.get('assessment_type')
     reason = request.form.get('reason')
+    student_name = session['user_name']
 
-    if not reason.strip():
-        flash('Remark reason cannot be empty.', 'error')
-        return redirect(url_for('s_marks'))
-
-    existing_request = regradeReq.query.filter_by(student_name=student_name, assessment=assessment_type).first()
+    existing_request = regradeReq.query.filter_by(assessment=assessment).first()
     if existing_request:
-        flash('You have already submitted a remark request for this assessment.', 'warning')
-        return redirect(url_for('s_marks'))
+        flash(f'A remark request for {assessment} has already been submitted.', 'warning')
+    else:
+        new_request = regradeReq(
+            student_name=student_name,
+            assessment=assessment,
+            reason=reason,
+            remark_status="Pending",
+            remark_action=""
+        )
+        db.session.add(new_request)
+        db.session.commit()
+        flash(f'Remark request for {assessment} submitted successfully!', 'success')
 
-    new_request = regradeReq(
-        student_name=student_name,
-        assessment=assessment_type,
-        reason=reason,
-        remark_status='Pending',
-        remark_action='None'
-    )
-    db.session.add(new_request)
-    db.session.commit()
-
-    flash('Remark request submitted successfully!', 'success')
     return redirect(url_for('s_marks'))
 
-@app.route('/s_lectures')
-def s_lectures():
-    if 'user_type' not in session or session['user_type'] != 'student':
-        return redirect(url_for('login'))
-    pagename = 's_lectures'
-    return render_template('s_lectures.html', pagename=pagename)
 
 def add_users(registration_details):
     university_id, name, utor_email, password, user_type = registration_details
@@ -274,6 +271,16 @@ def add_users(registration_details):
 def get_identity_by_email(utor_email):
     current_user = User.query.filter_by(utor_email=utor_email).first()
     return current_user.user_type
+
+@app.route('/s_lectures')
+def s_lectures():
+    if 'user_type' not in session or session['user_type'] != 'student':
+        return redirect(url_for('login'))
+
+    lecture_notes = lectureNotes.query.all()
+    
+    return render_template('s_lectures.html', lecture_notes=lecture_notes)
+
 
 if __name__ == '__main__':
     app.run(debug=True)
