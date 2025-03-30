@@ -1,0 +1,58 @@
+{% extends "template.html" %}
+
+{% block s_or_i_homepage %}
+  <li><a href="{{ url_for('i_homeafterlogin') }}">Home</a></li>
+{% endblock%}
+
+{% block s_or_i_feedback %}
+  <li><a href="{{ url_for('i_anonfeedback') }}">Anon Feedback</a></li>
+{% endblock%}
+
+{% block s_or_i_marks %}
+  <li><a href="{{ url_for('i_marks') }}">Marks</a></li>
+{% endblock%}
+{% block i_updatemarks %}
+  <li><a href="{{ url_for('i_updatemarks') }}">Update Marks</a></li>
+{% endblock %}
+
+{% block s_or_i_notes %}
+<li class="dropdown-menu">
+  <a href="#">Lecture Notes</a>
+  <ul>
+    <li><a href="{{ url_for('i_lectures') }}">Lecture Notes</a></li>
+    <li><a href="{{ url_for('i_updatelectures') }}">Update Lecture Notes</a></li> 
+  </ul>
+</li>
+{% endblock%}
+
+{% block pageheader %}
+  <h1>Lecture Notes</h1> 
+{% endblock %}
+
+{% block content %}
+    <br>
+    <table class="table">
+        <tr>
+            <th>Feedback ID</th>
+            <th>Instructor ID</th>
+            <th>Teaching Style</th>
+            <th>Teaching Style Feedback</th>
+            <th>Teaching Style Labs</th>
+            <th>Lab Improvement</th>
+            <th>Status</th>
+
+        </tr>
+        {% for query in query_feedback_result %}
+            <tr>
+               <td>{{ query.feedbackID }}</td>
+               <td>{{ query.instructorID }}</td>
+               <td>{{ query.like_teaching }}</td>
+               <td>{{ query.improvement_teaching }}</td>
+               <td>{{ query.like_labs }}</td>
+               <td>{{ query.improvement_labs }}</td>
+               <td>{{ query.viewed_status }}</td>
+            </tr>
+        {% endfor %}
+    </table>
+
+{% endblock content %}
