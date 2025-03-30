@@ -24,7 +24,22 @@
       <label for="menu-toggle" class="menu-icon">&#9776;</label>
   
       <!-- navigation bar links -->
-      {% if session.user_type %}
+      {% if request.path == '/' or  request.path == '/home' or request.path == '/login' or  request.path == '/register' %} <!-- Add this check for the home page -->
+      <ul class="nav-links">
+        <li><a href="{{ url_for('index') }}">Home</a></li>
+        <li><a href="{{ url_for('login') }}">Login</a></li>
+        <li><a href="{{ url_for('register') }}">Register</a></li>
+        
+        <!-- night mode toggle switch -->
+        <li class="nightmode-toggle">&#9790;
+          <label class="switch">
+            <input type="checkbox" id="nightmode-toggle">
+            <span class="slider round"></span>
+          </label>
+        </li>
+      </ul>
+      
+      {% elif session.user_type %}
         <ul class="nav-links">
           {% block s_or_i_homepage %}
           {% endblock %}
@@ -59,19 +74,6 @@
 
           <li><a href="{{ url_for('logout') }}">Logout</a></li>
 
-          <!-- night mode toggle switch -->
-          <li class="nightmode-toggle">&#9790;
-            <label class="switch">
-              <input type="checkbox" id="nightmode-toggle">
-              <span class="slider round"></span>
-            </label>
-          </li>
-        </ul>
-      {% else %}
-        <ul class="nav-links">
-          <li><a href="{{ url_for('login') }}">Login</a></li>
-          <li><a href="{{ url_for('register') }}">Register</a></li>
-          
           <!-- night mode toggle switch -->
           <li class="nightmode-toggle">&#9790;
             <label class="switch">

@@ -17,17 +17,23 @@
 {% endblock%}
 
 {% block pageheader %}
-  <h1>Lectures</h1>
-  <p class="overview">
-      Lecture Schedule:
-      Please print and bring these notes/worksheets to class.
-  </p>
+    <h1>Lecture Notes</h1>
 {% endblock %}
 
 {% block content %}
-  <div class="lectures-grid">
-    <div class="lectures-header">Week</div>
-    <div class="lectures-header">Topic</div>
-    <div class="lectures-header">Lecture Materials</div>
-  </div>
-{% endblock content %}
+    <h2>Your Lecture Notes</h2>
+
+    <div class="lecture-grid">
+        <div class="header">Week</div>
+        <div class="header">Topic</div>
+        <div class="header">Link to PDF</div>
+
+        {% for note in lecture_notes %}
+        <div>{{ note.week }}</div>
+        <div>{{ note.topic }}</div>
+        <div>
+            <a href="{{ url_for('static', filename='pdf/Syllabus.pdf') }}" target="_blank">Download PDF</a>
+        </div>
+        {% endfor %}
+    </div>
+{% endblock %}

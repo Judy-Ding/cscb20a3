@@ -21,6 +21,16 @@
 {% endblock %}
 
 {% block content %}
+
+{% with messages = get_flashed_messages() %}
+    {% if messages %}
+      <div class="flash-messages">
+        {% for message in messages %}
+          <div class="flash">{{ message }}</div>
+        {% endfor %}
+      </div>
+    {% endif %}
+  {% endwith %}
 <h1>Your Marks and Remark Requests</h1>
 
 <div class="marks-grid">
@@ -37,15 +47,11 @@
     {% if mark.assessment_type in remark_requests %}
       <p>Request Submitted</p>
     {% else %}
-      <button onclick="openRemarkForm('{{ mark.assessment_type }}')">Send Request</button>
-      <div id="remark-form-{{ mark.assessment_type }}" class="remark-form" style="display:none;">
-        <form action="{{ url_for('submit_remark') }}" method="post">
-          <input type="hidden" name="assessment_type" value="{{ mark.assessment_type }}">
-          <textarea name="reason" placeholder="Enter your reason here..." required></textarea>
-          <button type="submit">Submit</button>
-          <button type="button" onclick="closeRemarkForm('{{ mark.assessment_type }}')">Cancel</button>
-        </form>
-      </div>
+      <form action="{{ url_for('submit_remark') }}" method="post">
+        <input type="hidden" name="assessment_type" value="{{ mark.assessment_type }}">
+        <textarea name="reason" placeholder="Enter your reason here..." required></textarea>
+        <button type="submit">Submit</button>
+      </form>
     {% endif %}
   </div>
 
@@ -57,22 +63,5 @@
     {% endif %}
   </div>
   {% endfor %}
-  <script>
-    function openRemarkForm(assessmentType) {
-      const form = document.getElementById(`remark-form-${assessmentType}`);
-      if (form) {
-        form.style.display = 'block';
-      }
-    }
-    
-    function closeRemarkForm(assessmentType) {
-      const form = document.getElementById(`remark-form-${assessmentType}`);
-      if (form) {
-        form.style.display = 'none';
-      }
-    }
-</script>
+</div>
 {% endblock %}
-
-
-    
