@@ -146,7 +146,6 @@ def login():
     # Successful login, starts the user's session
     session['utor_email'] = utor_email
     session['user_id'] = user.ID
-    session['university_id'] = user.university_id  
     session['user_type'] = user.user_type
     session['user_name'] = user.name
     
@@ -185,7 +184,7 @@ def i_anonfeedback():
     if 'user_type' not in session or session['user_type'] != 'instructor':
         return redirect(url_for('login'))
     
-    instructor_id = session.get('university_id')
+    instructor_id = session.get('user_id')
     pagename = 'Anonymous Feedback'
     query_feedback_result=i_query_feedback(instructor_id) #query for feedback for instructor and return
     return render_template('i_anonfeedback.html', pagename=pagename, query_feedback_result=query_feedback_result)

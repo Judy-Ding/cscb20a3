@@ -27,7 +27,7 @@
 
 {% block pageheader %}
   {% if session['user_type'] == 'instructor' %}
-    <h1>Welcome {{ session.get('user_name', 'Instructor') }}, click <a href="{{ url_for('i_marks') }}">here</a> to see all the grades of your class.</h1>
+    <h1>Welcome instructor {{ session.get('user_name', 'Instructor') }}, click <a href="{{ url_for('i_marks') }}">here</a> to see all the grades of your class.</h1>
   {% else %}
     <h1>Welcome to CSCB20 - Introduction to Databases and Web Applications</h1>
   {% endif %}
