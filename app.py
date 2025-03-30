@@ -99,6 +99,7 @@ def test_db():
         return "An error occurred when connecting to the database: " + str(e)
 
 @app.route('/')
+@app.route('/home')
 def index():
     return render_template('index.html')
 
