@@ -22,14 +22,14 @@
 
 {% block content %}
 
-{% with messages = get_flashed_messages() %}
-    {% if messages %}
-      <div class="flash-messages">
-        {% for message in messages %}
-          <div class="flash">{{ message }}</div>
-        {% endfor %}
-      </div>
-    {% endif %}
+  {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        <div class="flash-messages">
+          {% for message in messages %}
+            <div class="flash">{{ message }}</div>
+          {% endfor %}
+        </div>
+      {% endif %}
   {% endwith %}
 <h1>Your Marks and Remark Requests</h1>
 
@@ -67,5 +67,5 @@
   </div>
   {% endfor %}
 </div>
-<script src="{{ url_for('static', filename='js/script.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/script.js') }}"></script>
 {% endblock %}
