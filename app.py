@@ -341,7 +341,7 @@ def add_lecture():
 
     flash('Lecture notes submitted successfully!', 'success')
 
-    return redirect(url_for('i_updatelectures'), pagename = pagename)
+    return redirect(url_for('i_updatelectures'))
 
 @app.route('/i_updatelectures') # update lec
 def i_updatelectures():

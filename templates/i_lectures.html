@@ -39,8 +39,8 @@
     <div>{{ note.week }}</div>
     <div>{{ note.topic }}</div>
     <div>
-      {% if note.link %}
-      <a href="{{ note.url }}" target="_blank">Download PDF</a>
+      {% if note.url %}
+        <a href="{{ note.url }}" target="_blank">Download PDF</a>
       {% else %}
         No PDF Available
       {% endif %}
