@@ -1,0 +1,91 @@
+{% extends "template.html" %}
+
+{% block s_or_i_homepage %}
+  <li><a href="{{ url_for('i_homeafterlogin') }}">Home</a></li>
+{% endblock%}
+
+{% block s_or_i_feedback %}
+  <li><a href="{{ url_for('i_anonfeedback') }}">Anon Feedback</a></li>
+{% endblock%}
+
+{% block s_or_i_marks %}
+  <li><a href="{{ url_for('i_marks') }}">Marks</a></li>
+{% endblock%}
+{% block i_updatemarks %}
+  <li><a href="{{ url_for('i_updatemarks') }}">Update Marks</a></li>
+{% endblock %}
+{% block i_remarkreqs %}
+<li><a href="{{ url_for('i_remarkreqs') }}">Remark Requests</a></li>
+{% endblock %}
+
+
+{% block s_or_i_notes %}
+<li class="dropdown-menu">
+  <a href="#">Lecture Notes</a>
+  <ul>
+    <li><a href="{{ url_for('i_lectures') }}">Lecture Notes</a></li>
+    <li><a href="{{ url_for('i_updatelectures') }}">Update Lecture Notes</a></li> 
+  </ul>
+</li>
+{% endblock%}
+
+{% block pageheader %}
+  <h1>Remark Requests</h1> 
+{% endblock %}
+
+
+{% block content %}
+
+{% with messages = get_flashed_messages() %}
+    {% if messages %}
+      <div class="flash-messages">
+        {% for message in messages %}
+          <div class="flash">{{ message }}</div>
+        {% endfor %}
+      </div>
+    {% endif %}
+  {% endwith %}
+<h1>Students' Remark Requests</h1>
+
+<!-- Add this notice and link above the table -->
+<div class="instructor-notice" style="margin-bottom: 20px; padding: 15px; background-color: #f8f9fa; border-left: 4px solid #007bff;">
+    <p style="margin: 0;">
+      <strong>Dear Instructors,</strong> please ensure to update the marks of the respective student if a regrade request is updated to "Approved". 
+      <a href="{{ url_for('i_updatemarks') }}" style="color: #007bff; text-decoration: underline;">Update Marks Here</a>
+    </p>
+  </div>
+
+<div class="remarks-grid">
+  <div class="header">Student Name</div>
+  <div class="header">Assessment</div>
+  <div class="header">Reason</div>
+  <div class="header">Status</div>
+  <div class="header">Action</div>
+
+
+  {% for request in remark_requests %}
+  <div>{{ request.student_name }}</div>
+  <div>{{ request.assessment }}</div>
+  <div>{{ request.reason }}</div>
+  <div class="status-{{ request.remark_status|lower }}">
+    {{ request.remark_status }}
+  </div>
+  <div>
+    {% if request.remark_status == 'Pending' %}
+        <form action="{{ url_for('update_remark_status') }}" method="post">
+        <input type="hidden" name="remarkID" value="{{ request.remarkID }}">
+        <select name="remark_status" class="status-select">
+            <option value="Pending" selected>Pending</option>
+            <option value="Approved">Approved</option>
+            <option value="Rejected">Rejected</option>
+        </select>
+        <button type="submit" class="btn-update">Update</button>
+        </form>
+    {% else %}
+    <span class="status-{{ request.remark_status|lower }}">{{ request.remark_status }}</span>
+    {% endif %}
+  </div>
+{% endfor %}
+</div>
+{% endblock %}
+

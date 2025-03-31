@@ -486,12 +486,22 @@ input:focus + .slider {
     transition: background-color 0.3s;
   }
   
+  /* Marks & Remarks */
+
   .marks-grid {
     display: grid;
     grid-template-columns: 1fr 1fr 1fr 1fr;
     gap: 10px;
     margin-top: 20px;
   }
+
+  .remarks-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+    gap: 10px;
+    margin-top: 20px;
+  }
+  
 
   .lecture-grid {
     display: grid;

@@ -317,6 +317,44 @@ def i_updatemarks():
     pagename = 'Update Marks'
     return render_template('i_updatemarks.html', pagename = pagename)
 
+@app.route('/i_remarkreqs') # view student remark requests
+def i_remarkreqs():
+    if 'user_type' not in session or session['user_type'] != 'instructor':
+        flash('Please login as instructor to view remark requests', 'error')
+        return redirect(url_for('login'))
+    
+    pagename = 'Remark Requests'
+
+    status_filter = request.args.get('status')
+    query = regradeReq.query.filter(
+        regradeReq.remark_status.in_(['Pending', 'Approved', 'Rejected'])
+    )
+
+    remarks = query.order_by(regradeReq.remark_status, regradeReq.remarkID).all()
+    
+    return render_template('i_remarkreqs.html', remark_requests=remarks)
+
+
+@app.route('/update_remark_status', methods=['POST'])
+def update_remark_status():
+    if 'user_type' not in session or session['user_type'] != 'instructor':
+        flash('Unauthorized action', 'error')
+        return redirect(url_for('login'))
+    
+    remark_id = request.form.get('remarkID')
+    new_status = request.form.get('remark_status')
+    
+    remark = regradeReq.query.get(remark_id)
+    if remark:
+        remark.remark_status = new_status
+        remark.remark_action = f"Status changed to {new_status} by {session.get('username')}"
+        db.session.commit()
+        flash(f'Remark request #{remark_id} updated to {new_status}', 'success')
+    else:
+        flash('Remark request not found', 'error')
+    
+    return redirect(url_for('i_remarkreqs'))
+
 @app.route('/i_lectures') # view lec
 def i_lectures():
     pagename = 'lecture notes'
