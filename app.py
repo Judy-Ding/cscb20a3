@@ -190,13 +190,6 @@ def i_anonfeedback():
     return render_template('i_anonfeedback.html', pagename=pagename, query_feedback_result=query_feedback_result)
 
 def i_query_feedback(instructor_id):
-    # FOR INSTRUCTOR: returns feedback data from the db 
-    # temp dummy data: 
-    # feedback_data = [
-    #     {'feedbackID': 1, 'instructorID': 111, 'like_teaching': 'yes', 'improvement_teaching': 'could use better examples', 'like_labs': 'not really', 'improvement_labs': 'could be more engaging', 'viewed_status':'Open'},
-    #     {'feedbackID': 1, 'instructorID': 111, 'like_teaching': 'yes', 'improvement_teaching': 'could use better examples', 'like_labs': 'not really', 'improvement_labs': 'could be more engaging', 'viewed_status':'Open'}
-
-    # ]
     feedback_data=anonyFeedback.query.filter_by(instructorID=instructor_id).all() 
     return feedback_data
 
@@ -307,14 +300,49 @@ def i_marks():
     if 'user_type' not in session or session['user_type'] != 'instructor':
         return redirect(url_for('login'))
     pagename = 'Marks'
-    return render_template('i_marks.html', pagename = pagename)
+    student_names = {user.ID: user.name for user in User.query.filter_by(user_type='student')}
+    marks = studentMarks.query.all()
+    return render_template('i_marks.html', marks=marks, student_names=student_names, pagename='Marks')
 
-@app.route('/i_updatemarks') # update student marks
+@app.route('/i_updatemarks', methods=['GET', 'POST']) # update student marks
 def i_updatemarks():
     if 'user_type' not in session or session['user_type'] != 'instructor':
         return redirect(url_for('login'))
-    pagename = 'Update Marks'
-    return render_template('i_updatemarks.html', pagename = pagename)
+    
+    if request.method == 'GET':
+        students = User.query.filter_by(user_type='student').all()
+        assessment_types = ['Assignment 1', 'Assignment 2', 'Assignment 3', 'Midterm', 'Final'] 
+        return render_template('i_updatemarks.html', pagename='Update Marks', students=students, assessment_types=assessment_types)
+    else:
+        student_name = request.form['student']
+        assessment_type = request.form['assessment-type']
+        mark = float(request.form['update-mark'])
+        
+        student = User.query.filter_by(name=student_name, user_type='student').first()
+        if not student:
+            flash('Student not found!', 'danger')
+            return redirect(url_for('i_updatemarks'))
+        
+        existing_mark = studentMarks.query.filter_by(
+            ID=student.ID,
+            assessment_type=assessment_type
+        ).first()
+        
+        if existing_mark:
+            # updates existing mark
+            existing_mark.grade = mark
+        else:
+            # else, creates new mark entry
+            new_mark = studentMarks(
+                ID=student.ID,
+                assessment_type=assessment_type,
+                grade=mark
+            )
+            db.session.add(new_mark)
+        
+        db.session.commit()
+        flash('Marks updated successfully!', 'success')
+        return redirect(url_for('i_updatemarks'))
 
 @app.route('/i_lectures') # view lec
 def i_lectures():

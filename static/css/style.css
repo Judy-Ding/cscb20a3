@@ -560,6 +560,7 @@ input:focus + .slider {
   color: white;
   padding: 10px;
   text-align: center;
+
 }
 
 .table tr {
@@ -582,6 +583,25 @@ input:focus + .slider {
   background-color: #0056b3;
 }
 
+#update-mark{
+   margin-bottom:30px;
+}
+  
+  label {
+    display: block;
+    margin-top: 15px;
+    font-weight: bold;
+  }
+  
+  .form-input {
+    display: block;
+    width: 100%;
+    padding: 8px;
+    margin: 5px 0 15px 0;
+    box-sizing: border-box;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
 
   /* Responsive adjustments */
   @media (max-width: 600px) {

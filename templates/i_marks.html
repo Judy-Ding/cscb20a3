@@ -33,21 +33,19 @@
     <br>
     <table class="table">
         <tr>
-            <th>Person_id</th>
-            <th>Name</th>
+            <th>Student Name</th>
+            <th>Student ID</th>
             <th>Assessment</th>
             <th>Grade</th>
         </tr>
-        {% for query in query_marks_result %}
-            <tr>
-               <td>{{ query.person_id }}</td>
-               <td>{{ query.name }}</td>
-               <td>{{ query.assessment }}</td>
-               <td>{{ query.grade }}</td>
+        {% for mark in marks %}
+        <tr>
+               <td>{{ student_names.get(mark.ID, 'Unknown') }}</td>
+               <td>{{ mark.ID }}</td>
+               <td>{{ mark.assessment_type }}</td>
+               <td>{{ mark.grade }}</td>
             </tr>
         {% endfor %}
     </table>
-
-
 {% endblock content %}
     

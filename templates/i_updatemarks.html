@@ -28,3 +28,41 @@
 {% block pageheader %}
   <h1>Update Marks</h1> 
 {% endblock %}
+
+{% block content %}
+  {% with messages = get_flashed_messages() %}
+    {% if messages %}
+      <div class="flash-messages">
+        {% for message in messages %}
+          <div class="flash">{{ message }}</div>
+        {% endfor %}
+      </div>
+    {% endif %}
+  {% endwith %}
+
+  <section id="update-marks">
+    <h2>Update Student Marks</h2>
+    <form action="/i_updatemarks" method="post">
+      <label for="student">Select Student:</label>
+      <select id="student" name="student" required>
+        {% for student in students %}
+        <option value="{{ student.name }}">{{ student.name }}</option>
+        {% endfor %}
+      </select>
+      
+      <label for="assessment-type">Assessment Type:</label>
+      <select id="assessment-type" name="assessment-type" required>
+        {% for type in assessment_types %}
+        <option value="{{ type }}">{{ type }}</option>
+        {% endfor %}
+      </select>
+      
+      <div>
+        <label for="update-mark">Enter updated mark:</label>
+        <input type="number" id="update-mark" name="update-mark" step="0.01" min="0" max="100" required>
+      </div>
+  
+      <button type="submit" class="btn-feedback">Update Mark</button>
+    </form>
+  </section>
+{% endblock content %}
