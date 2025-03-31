@@ -1,0 +1,50 @@
+{% extends "template.html" %}
+
+{% block s_or_i_homepage %}
+  <li><a href="{{ url_for('i_homeafterlogin') }}">Home</a></li>
+{% endblock%}
+
+{% block s_or_i_feedback %}
+  <li><a href="{{ url_for('i_anonfeedback') }}">Anon Feedback</a></li>
+{% endblock%}
+
+{% block s_or_i_marks %}
+  <li><a href="{{ url_for('i_marks') }}">Marks</a></li>
+{% endblock%}
+{% block i_updatemarks %}
+  <li><a href="{{ url_for('i_updatemarks') }}">Update Marks</a></li>
+{% endblock %}
+
+{% block s_or_i_notes %}
+<li class="dropdown-menu">
+  <a href="#">Lecture Notes</a>
+  <ul>
+    <li><a href="{{ url_for('i_lectures') }}">Lecture Notes</a></li>
+    <li><a href="{{ url_for('i_updatelectures') }}">Update Lecture Notes</a></li> 
+  </ul>
+</li>
+{% endblock%}
+
+{% block pageheader %}
+  <h1>Lecture Notes</h1> 
+{% endblock %}
+
+{% block content %}
+  <div class="lecture-grid">
+    <div class="header">Week</div>
+    <div class="header">Topic</div>
+    <div class="header">Link to PDF</div>
+
+    {% for note in lecture_notes %}
+    <div>{{ note.week }}</div>
+    <div>{{ note.topic }}</div>
+    <div>
+      {% if note.link %}
+      <a href="{{ note.url }}" target="_blank">Download PDF</a>
+      {% else %}
+        No PDF Available
+      {% endif %}
+    </div>
+    {% endfor %}
+  </div>
+{% endblock content %}

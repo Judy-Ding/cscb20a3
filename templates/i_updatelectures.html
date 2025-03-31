@@ -1,0 +1,49 @@
+{% extends "template.html" %}
+
+{% block s_or_i_homepage %}
+  <li><a href="{{ url_for('i_homeafterlogin') }}">Home</a></li>
+{% endblock%}
+
+{% block s_or_i_feedback %}
+  <li><a href="{{ url_for('i_anonfeedback') }}">Anon Feedback</a></li>
+{% endblock%}
+
+{% block s_or_i_marks %}
+  <li><a href="{{ url_for('i_marks') }}">Marks</a></li>
+{% endblock%}
+{% block i_updatemarks %}
+  <li><a href="{{ url_for('i_updatemarks') }}">Update Marks</a></li>
+{% endblock %}
+
+{% block s_or_i_notes %}
+<li class="dropdown-menu">
+  <a href="#">Lecture Notes</a>
+  <ul>
+    <li><a href="{{ url_for('i_lectures') }}">Lecture Notes</a></li>
+    <li><a href="{{ url_for('i_updatelectures') }}">Update Lecture Notes</a></li> 
+  </ul>
+</li>
+{% endblock%}
+
+{% block pageheader %}
+  <h1>Add New Lecture Note</h1>
+{% endblock %}
+
+{% block content%}
+{% with messages = get_flashed_messages(with_categories=true) %}
+{% if messages %}
+  <ul>
+    {% for category, message in messages %}
+      <li class="{{ category }}">{{ message }}</li>
+    {% endfor %}
+  </ul>
+{% endif %}
+{% endwith %}
+<h2>Update</h2>
+  <form action="{{ url_for('add_lecture') }}" method="post" class="note-form">
+    <input class='input-text' type="number" name="week" placeholder="Week" required>
+    <input class='input-text' type="text" name="topic" placeholder="Topic" required>
+    <input class='input-text' type="url" name="url" placeholder="URL" required>
+    <button type="submit" class="btn-sbt-lec">Add Lecture Note</button>
+  </form>
+{% endblock%}

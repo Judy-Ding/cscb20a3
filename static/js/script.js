@@ -1,5 +1,14 @@
 
-  function replaceWithTextBox(assessmentType) {
-    document.querySelector(`#remark-form-${assessmentType} button`).style.display = 'none';
-    document.querySelector(`#remark-textbox-${assessmentType}`).style.display = 'block';
+function openRemarkForm(assessmentType) {
+  const form = document.getElementById(`remark-form-${assessmentType}`);
+  if (form) {
+    form.style.display = 'block';
   }
+}
+
+function closeRemarkForm(assessmentType) {
+  const form = document.getElementById(`remark-form-${assessmentType}`);
+  if (form) {
+    form.style.display = 'none';
+  }
+}

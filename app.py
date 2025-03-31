@@ -75,8 +75,8 @@ class User(db.Model):
 
     def verify_password(self, password):
         return bcrypt.check_password_hash(self.password, password)
-    
-# ------------------------------------------------------------------------------
+
+#-----------------------------
 class lectureNotes(db.Model):
     __tablename__ = 'lectureNotes'
     id = db.Column(db.Integer, primary_key=True)
@@ -86,7 +86,6 @@ class lectureNotes(db.Model):
 
     def __repr__(self):
         return f"lectureNotes('{self.week}', '{self.topic}', '{self.url}')"
-
 
 #-----------------------------
 
@@ -149,6 +148,7 @@ def login():
     session['user_id'] = user.ID
     session['user_type'] = user.user_type
     session['user_name'] = user.name
+    
     session.permanent = True
 
     # Redirect based on user type
@@ -169,7 +169,7 @@ def logout():
 def i_homeafterlogin():
     if 'user_type' not in session or session['user_type'] != 'instructor':
         return redirect(url_for('login'))
-    pagename = 'i_homeafterlogin'
+    pagename = 'Home'
     return render_template('i_homeafterlogin.html', pagename=pagename)
 
 @app.route('/s_homeafterlogin')
@@ -178,6 +178,27 @@ def s_homeafterlogin():
         return redirect(url_for('login'))
     pagename = 's_homeafterlogin'
     return render_template('s_homeafterlogin.html', pagename=pagename)
+
+@app.route('/i_anonfeedback')
+def i_anonfeedback():
+    if 'user_type' not in session or session['user_type'] != 'instructor':
+        return redirect(url_for('login'))
+    
+    instructor_id = session.get('user_id')
+    pagename = 'Anonymous Feedback'
+    query_feedback_result=i_query_feedback(instructor_id) #query for feedback for instructor and return
+    return render_template('i_anonfeedback.html', pagename=pagename, query_feedback_result=query_feedback_result)
+
+def i_query_feedback(instructor_id):
+    # FOR INSTRUCTOR: returns feedback data from the db 
+    # temp dummy data: 
+    # feedback_data = [
+    #     {'feedbackID': 1, 'instructorID': 111, 'like_teaching': 'yes', 'improvement_teaching': 'could use better examples', 'like_labs': 'not really', 'improvement_labs': 'could be more engaging', 'viewed_status':'Open'},
+    #     {'feedbackID': 1, 'instructorID': 111, 'like_teaching': 'yes', 'improvement_teaching': 'could use better examples', 'like_labs': 'not really', 'improvement_labs': 'could be more engaging', 'viewed_status':'Open'}
+
+    # ]
+    feedback_data=anonyFeedback.query.filter_by(instructorID=instructor_id).all() 
+    return feedback_data
 
 @app.route('/s_anonfeedback', methods=['GET', 'POST'])
 def s_anonfeedback():
@@ -251,6 +272,15 @@ def submit_remark():
 
     return redirect(url_for('s_marks'))
 
+@app.route('/s_lectures')
+def s_lectures():
+    pagename = 'lecture notes'
+    if 'user_type' not in session or session['user_type'] != 'student':
+        return redirect(url_for('login'))
+
+    lecture_notes = lectureNotes.query.all()
+    
+    return render_template('s_lectures.html', lecture_notes=lecture_notes, pagename = pagename)
 
 def add_users(registration_details):
     university_id, name, utor_email, password, user_type = registration_details
@@ -273,15 +303,64 @@ def get_identity_by_email(utor_email):
     current_user = User.query.filter_by(utor_email=utor_email).first()
     return current_user.user_type
 
-@app.route('/s_lectures')
-def s_lectures():
-    if 'user_type' not in session or session['user_type'] != 'student':
+@app.route('/i_marks') # view student marks
+def i_marks():
+    if 'user_type' not in session or session['user_type'] != 'instructor':
+        return redirect(url_for('login'))
+    pagename = 'Marks'
+    return render_template('i_marks.html', pagename = pagename)
+
+@app.route('/i_updatemarks') # update student marks
+def i_updatemarks():
+    if 'user_type' not in session or session['user_type'] != 'instructor':
+        return redirect(url_for('login'))
+    pagename = 'Update Marks'
+    return render_template('i_updatemarks.html', pagename = pagename)
+
+@app.route('/i_lectures') # view lec
+def i_lectures():
+    pagename = 'lecture notes'
+    if 'user_type' not in session or session['user_type'] != 'instructor':
         return redirect(url_for('login'))
 
     lecture_notes = lectureNotes.query.all()
     
-    return render_template('s_lectures.html', lecture_notes=lecture_notes)
+    return render_template('i_lectures.html', lecture_notes=lecture_notes, pagename = pagename)
 
+@app.route('/add_lecture', methods=['POST'])
+def add_lecture():
+    week = request.form['week']
+    topic = request.form['topic']
+    url = request.form['url']
+
+    new_lecture = lectureNotes(week=week, topic=topic, url=url)
+    pagename = 'Update Lecture Notes'
+
+    db.session.add(new_lecture)
+    db.session.commit()
+
+    flash('Lecture notes submitted successfully!', 'success')
+
+    return redirect(url_for('i_updatelectures'), pagename = pagename)
+
+@app.route('/i_updatelectures') # update lec
+def i_updatelectures():
+    if 'user_type' not in session or session['user_type'] != 'instructor':
+        return redirect(url_for('login'))
+    pagename = 'Update Lecture Notes'
+    return render_template('i_updatelectures.html', pagename = pagename)
+
+@app.route('/update_status', methods=['POST'])
+def update_status():
+    data = request.get_json()
+    feedback = anonyFeedback.query.get(data['feedbackID'])
+    
+    if feedback:
+        feedback.viewed_status = data['newStatus']
+        db.session.commit()
+        return jsonify({'success': True})
+    
+    return jsonify({'success': False})
 
 if __name__ == '__main__':
     app.run(debug=True)

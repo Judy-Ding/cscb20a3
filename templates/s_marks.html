@@ -22,14 +22,14 @@
 
 {% block content %}
 
-  {% with messages = get_flashed_messages() %}
-      {% if messages %}
-        <div class="flash-messages">
-          {% for message in messages %}
-            <div class="flash">{{ message }}</div>
-          {% endfor %}
-        </div>
-      {% endif %}
+{% with messages = get_flashed_messages() %}
+    {% if messages %}
+      <div class="flash-messages">
+        {% for message in messages %}
+          <div class="flash">{{ message }}</div>
+        {% endfor %}
+      </div>
+    {% endif %}
   {% endwith %}
 <h1>Your Marks and Remark Requests</h1>
 
@@ -47,13 +47,10 @@
     {% if mark.assessment_type in remark_requests %}
       <p>Request Submitted</p>
     {% else %}
-      <form action="{{ url_for('submit_remark') }}" method="post" id="remark-form-{{ mark.assessment_type }}">
+      <form action="{{ url_for('submit_remark') }}" method="post">
         <input type="hidden" name="assessment_type" value="{{ mark.assessment_type }}">
-        <button type="button" onclick="replaceWithTextBox('{{ mark.assessment_type }}')">Submit</button>
-        <div id="remark-textbox-{{ mark.assessment_type }}" style="display:none;">
-          <textarea name="reason" placeholder="Enter your reason here..." required></textarea>
-          <button type="submit">Submit Regrade Request</button>
-        </div>
+        <textarea name="reason" placeholder="Enter your reason here..." required></textarea>
+        <button type="submit">Submit</button>
       </form>
     {% endif %}
   </div>
@@ -67,5 +64,4 @@
   </div>
   {% endfor %}
 </div>
-  <script src="{{ url_for('static', filename='js/script.js') }}"></script>
 {% endblock %}

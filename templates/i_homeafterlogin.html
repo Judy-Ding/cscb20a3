@@ -1,0 +1,60 @@
+{% extends "template.html" %}
+
+{% block s_or_i_homepage %}
+  <li><a href="{{ url_for('i_homeafterlogin') }}">Home</a></li>
+{% endblock%}
+
+{% block s_or_i_feedback %}
+  <li><a href="{{ url_for('i_anonfeedback') }}">Anon Feedback</a></li>
+{% endblock%}
+
+{% block s_or_i_marks %}
+  <li><a href="{{ url_for('i_marks') }}">Marks</a></li>
+{% endblock%}
+{% block i_updatemarks %}
+  <li><a href="{{ url_for('i_updatemarks') }}">Update Marks</a></li>
+{% endblock %}
+
+{% block s_or_i_notes %}
+<li class="dropdown-menu">
+  <a href="#">Lecture Notes</a>
+  <ul>
+    <li><a href="{{ url_for('i_lectures') }}">Lecture Notes</a></li>
+    <li><a href="{{ url_for('i_updatelectures') }}">Update Lecture Notes</a></li> 
+  </ul>
+</li>
+{% endblock%}
+
+{% block pageheader %}
+  {% if session['user_type'] == 'instructor' %}
+    <h1>Welcome instructor {{ session.get('user_name', 'Instructor') }}, click <a href="{{ url_for('i_marks') }}">here</a> to see all the grades of your class.</h1>
+  {% else %}
+    <h1>Welcome to CSCB20 - Introduction to Databases and Web Applications</h1>
+  {% endif %}
+{% endblock %}
+
+{% block content %}
+    <section id="home">
+      <h2>Course Overview</h2>
+      <p>This course introduces the fundamentals of databases. We will cover topics such as relational models, SQL, database design, and more.<a href="https://utsc.calendar.utoronto.ca/search-courses"> Details can be found here.</a></p>
+
+      <h3>Prerequisite</h3>
+      <p>Some experience with programming in an imperative language such as Python, Java, or C.</p>
+
+      <h3>Exclusion</h3>
+      <p>This course may not be taken after - or concurrently with - any C- or D-level CSC course.</p>
+
+      <h3>Professor Information</h3>
+      <div class="professor-details">
+          <div class="professor-photo">
+            <img src="{{ url_for('static', filename='images/Purva.jpeg') }}">
+          </div>
+          <div class="professor-text">
+              <p><strong>Dr. Purva Gawde</strong></p>
+              <p>Email: purva.gawde@utoronto.ca</p>
+              <p>Office Hours: Monday 11:00 to 12:00 (Location: IA 4056)</p>
+              <p>Course: Friday 9:00-11:00 (Location: IC493)</p>
+          </div>
+      </div>
+    </section>
+{% endblock content %}
