@@ -32,7 +32,7 @@
         <div>{{ note.week }}</div>
         <div>{{ note.topic }}</div>
         <div>
-            <a href="{{ url_for('static', filename='pdf/Syllabus.pdf') }}" target="_blank">Download PDF</a>
+          <a href="{{ note.url }}" target="_blank">Link to PDF</a>
         </div>
         {% endfor %}
     </div>

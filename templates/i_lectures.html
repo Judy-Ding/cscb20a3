@@ -14,6 +14,9 @@
 {% block i_updatemarks %}
   <li><a href="{{ url_for('i_updatemarks') }}">Update Marks</a></li>
 {% endblock %}
+{% block i_remarkreqs %}
+<li><a href="{{ url_for('i_remarkreqs') }}">Remark Requests</a></li>
+{% endblock %}
 
 {% block s_or_i_notes %}
 <li class="dropdown-menu">
@@ -30,29 +33,21 @@
 {% endblock %}
 
 {% block content %}
-    <br>
-    <table class="table">
-        <tr>
-            <th>Feedback ID</th>
-            <th>Instructor ID</th>
-            <th>Teaching Style</th>
-            <th>Teaching Style Feedback</th>
-            <th>Teaching Style Labs</th>
-            <th>Lab Improvement</th>
-            <th>Status</th>
+  <div class="lecture-grid">
+    <div class="header">Week</div>
+    <div class="header">Topic</div>
+    <div class="header">Link to PDF</div>
 
-        </tr>
-        {% for query in query_feedback_result %}
-            <tr>
-               <td>{{ query.feedbackID }}</td>
-               <td>{{ query.instructorID }}</td>
-               <td>{{ query.like_teaching }}</td>
-               <td>{{ query.improvement_teaching }}</td>
-               <td>{{ query.like_labs }}</td>
-               <td>{{ query.improvement_labs }}</td>
-               <td>{{ query.viewed_status }}</td>
-            </tr>
-        {% endfor %}
-    </table>
-
+    {% for note in lecture_notes %}
+    <div>{{ note.week }}</div>
+    <div>{{ note.topic }}</div>
+    <div>
+      {% if note.url %}
+        <a href="{{ note.url }}" target="_blank">Download PDF</a>
+      {% else %}
+        No PDF Available
+      {% endif %}
+    </div>
+    {% endfor %}
+  </div>
 {% endblock content %}
