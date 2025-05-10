@@ -1,0 +1,67 @@
+{% extends "template.html" %}
+
+{% block s_or_i_homepage %}
+  <li><a href="{{ url_for('s_homeafterlogin') }}">Home</a></li>
+{% endblock%}
+
+{% block s_or_i_feedback %}
+  <li><a href="{{ url_for('s_anonfeedback') }}">Anon Feedback</a></li>
+{% endblock%}
+
+{% block s_or_i_marks %}
+  <li><a href="{{ url_for('s_marks') }}">Marks</a></li>
+{% endblock%}
+
+{% block s_or_i_notes %}
+  <li><a href="{{ url_for('s_lectures') }}">Lecture Notes</a></li>
+{% endblock%}
+
+{% block pageheader %}
+    <h1>Marks</h1>
+{% endblock %}
+
+{% block content %}
+
+{% with messages = get_flashed_messages() %}
+    {% if messages %}
+      <div class="flash-messages">
+        {% for message in messages %}
+          <div class="flash">{{ message }}</div>
+        {% endfor %}
+      </div>
+    {% endif %}
+  {% endwith %}
+<h1>Your Marks and Remark Requests</h1>
+
+<div class="marks-grid">
+  <div class="header">Assessment</div>
+  <div class="header">Grade</div>
+  <div class="header">Submit Request</div>
+  <div class="header">Status</div>
+
+  {% for mark in marks %}
+  <div>{{ mark.assessment_type }}</div>
+  <div>{{ mark.grade }}</div>
+
+  <div>
+    {% if mark.assessment_type in remark_requests %}
+      <p>Request Submitted</p>
+    {% else %}
+      <form action="{{ url_for('submit_remark') }}" method="post">
+        <input type="hidden" name="assessment_type" value="{{ mark.assessment_type }}">
+        <textarea name="reason" placeholder="Enter your reason here..." required></textarea>
+        <button type="submit">Submit</button>
+      </form>
+    {% endif %}
+  </div>
+
+  <div>
+    {% if mark.assessment_type in remark_requests %}
+      {{ remark_requests[mark.assessment_type].remark_status }}
+    {% else %}
+      Not Submitted
+    {% endif %}
+  </div>
+  {% endfor %}
+</div>
+{% endblock %}

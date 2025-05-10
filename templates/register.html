@@ -1,0 +1,90 @@
+{% extends "template.html" %}
+
+{% block pageheader %}
+  <h1>CSCB20 - Registration</h1>
+{% endblock %}
+
+{% block content %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+
+  <section class="register-container">
+    <div class="register-box">
+      <form action="http://127.0.0.1:5000/register" method="post">
+
+      <h2>Create Your Account</h2>
+      
+      </form>
+
+      <form class="register-form" method="POST" action="{{ url_for('register') }}">
+        <div class="form-group">
+          <label for="name">Full Name</label>
+          <input type="text" id="name" name="name" required>
+        </div>
+        
+        <div class="form-group">
+          <label for="university_id" id="university_id_label">Student/Instructor ID</label>
+          <input type="text" id="university_id" name="university_id" 
+                 pattern="[A-Za-z0-9]{8,12}"
+                 title="8-12 alphanumeric characters" required>
+        </div>
+        
+        <div class="form-group">
+          <label for="utor_email">UToronto Email</label>
+          <input type="email" id="utor_email" name="utor_email" required>
+        </div>
+        
+        <div class="form-group">
+          <label for="password">Password</label>
+          <input type="password" id="password" name="password" 
+                 minlength="8" required>
+        </div>
+        
+        <div class="form-group">
+          <label for="user_type">User Type</label>
+          <select id="user_type" name="user_type" required>
+            <option value="">Select user type</option>
+            <option value="student">Student</option>
+            <option value="instructor">Instructor</option>
+          </select>
+        </div>
+        
+        <button type="submit" class="btn-register">Register</button>
+        <a href="{{ url_for('index') }}" class="btn-back">Back to Course Overview</a>
+      </form>
+    </div>
+  </section>
+
+  <script>
+    // dynamic update for user_type
+    document.getElementById('user_type').addEventListener('change', function() {
+      const label = document.getElementById('university_id_label');
+      label.textContent = this.value === 'student' ? 'Student ID' : 
+                         this.value === 'instructor' ? 'Instructor ID' : 
+                         'Student/Instructor ID';
+    });
+
+    // Client-side validation
+    document.querySelector('.register-form').addEventListener('submit', function(e) {
+      const universityId = document.getElementById('university_id').value;
+      
+      if (!/^[A-Za-z0-9]{8,12}$/.test(universityId)) {
+        e.preventDefault();
+        alert('University ID must be 8-12 alphanumeric characters');
+        return false;
+      }
+      
+      return true;
+    });
+  </script>
+
+  {% with messages = get_flashed_messages() %}
+        {% if messages %}
+          <div class="flash-messages">
+            {% for message in messages %}
+              <div class="flash">{{ message }}</div>
+            {% endfor %}
+          </div>
+        {% endif %}
+      {% endwith %}
+
+{% endblock %}

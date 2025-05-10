@@ -1,13 +1,39 @@
 {% extends "template.html" %}
 
-{% block navbar %}
-  <li><a href="index.html">Home</a></li>
-  <li><a href="anonfeedback.html">Anon Feedback</a></li>
-  <li><a href="anonfeedback.html">Marks</a></li>
+{% block s_or_i_homepage %}
+  <li><a href="{{ url_for('i_homeafterlogin') }}">Home</a></li>
+{% endblock%}
+
+{% block s_or_i_feedback %}
+  <li><a href="{{ url_for('i_anonfeedback') }}">Anon Feedback</a></li>
+{% endblock%}
+
+{% block s_or_i_marks %}
+  <li><a href="{{ url_for('i_marks') }}">Marks</a></li>
+{% endblock%}
+{% block i_updatemarks %}
+  <li><a href="{{ url_for('i_updatemarks') }}">Update Marks</a></li>
+{% endblock %}
+{% block i_remarkreqs %}
+<li><a href="{{ url_for('i_remarkreqs') }}">Remark Requests</a></li>
 {% endblock %}
 
+{% block s_or_i_notes %}
+<li class="dropdown-menu">
+  <a href="#">Lecture Notes</a>
+  <ul>
+    <li><a href="{{ url_for('i_lectures') }}">Lecture Notes</a></li>
+    <li><a href="{{ url_for('i_updatelectures') }}">Update Lecture Notes</a></li> 
+  </ul>
+</li>
+{% endblock%}
+
 {% block pageheader %}
-  <h1>Welcome to CSCB20 - Introduction to Databases and Web Applications</h1> 
+  {% if session['user_type'] == 'instructor' %}
+    <h1>Welcome instructor {{ session.get('user_name', 'Instructor') }}, click <a href="{{ url_for('i_marks') }}">here</a> to see all the grades of your class.</h1>
+  {% else %}
+    <h1>Welcome to CSCB20 - Introduction to Databases and Web Applications</h1>
+  {% endif %}
 {% endblock %}
 
 {% block content %}

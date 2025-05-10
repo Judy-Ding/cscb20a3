@@ -1,0 +1,31 @@
+{% extends "template.html" %}
+
+{% block pageheader %}
+  <h1>Welcome to CSCB20 - Introduction to Databases and Web Applications</h1> 
+{% endblock %}
+
+{% block content %}
+  <section id="home">
+    <h2>Course Overview</h2>
+      <p>This course introduces the fundamentals of databases. We will cover topics such as relational models, SQL, database design, and more.<a href="https://utsc.calendar.utoronto.ca/search-courses"> Details can be found here.</a></p>
+
+      <h3>Prerequisite</h3>
+      <p>Some experience with programming in an imperative language such as Python, Java, or C.</p>
+
+      <h3>Exclusion</h3>
+      <p>This course may not be taken after - or concurrently with - any C- or D-level CSC course.</p>
+
+      <h3>Professor Information</h3>
+      <div class="professor-details">
+          <div class="professor-photo">
+            <img src="{{ url_for('static', filename='images/Purva.jpeg') }}">
+          </div>
+          <div class="professor-text">
+              <p><strong>Dr. Purva Gawde</strong></p>
+              <p>Email: purva.gawde@utoronto.ca</p>
+              <p>Office Hours: Monday 11:00 to 12:00 (Location: IA 4056)</p>
+              <p>Course: Friday 9:00-11:00 (Location: IC493)</p>
+          </div>
+      </div>
+  </section>
+{% endblock content %}

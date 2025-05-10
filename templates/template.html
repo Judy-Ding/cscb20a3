@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+
   {% if pagename %}
     <title>{{ pagename }}</title>
   {% else %}
@@ -15,7 +16,7 @@
   <nav>
     <div class="nav-container">
       <div class="logo">
-        <img src="{{ url_for('static', filename='images/UTSClogo.png') }}" alt="UTSC Logo">
+        <img src="{{ url_for('static', filename='images/UTSClogo.png') }}" alt="UTSCLogo">
       </div>
   
       <!-- mobile hamburger menu button -->
@@ -23,12 +24,12 @@
       <label for="menu-toggle" class="menu-icon">&#9776;</label>
   
       <!-- navigation bar links -->
+      {% if request.path == '/' or  request.path == '/home' or request.path == '/login' or  request.path == '/register' %} <!-- Add this check for the home page -->
       <ul class="nav-links">
-
-        <!--need to write the nav bar details for all the pages except from homebeforelogin-->
-        {% block navbar %}
-        {% endblock %}
-
+        <li><a href="{{ url_for('index') }}">Home</a></li>
+        <li><a href="{{ url_for('login') }}">Login</a></li>
+        <li><a href="{{ url_for('register') }}">Register</a></li>
+        
         <!-- night mode toggle switch -->
         <li class="nightmode-toggle">&#9790;
           <label class="switch">
@@ -37,24 +38,91 @@
           </label>
         </li>
       </ul>
+      
+      {% elif session.user_type %}
+        <ul class="nav-links">
+          {% block s_or_i_homepage %}
+          {% endblock %}
+
+          <li><a href="{{ url_for('static', filename='pdf/Syllabus.pdf') }}">Syllabus</a></li>
+
+          <li class="dropdown-menu">
+            <a href="#">Course Communications</a>
+            <ul>
+              <li><a href="https://piazza.com/class/m5fmz9kzjo83yk" target="_blank">Piazza</a></li>
+              {% block s_or_i_feedback %}
+              {% endblock %}
+            </ul>
+          </li>
+
+          <li class="dropdown-menu">
+            <a href="#">Assessments</a>
+            <ul>
+              {% block s_or_i_marks %}
+              {% endblock %}
+              {% block i_updatemarks %}
+              {% endblock %}
+              {% block i_remarkreqs %}
+             	{% endblock %}
+              <li><a href="https://markus2.utsc.utoronto.ca" target="_blank">Markus</a></li>
+            </ul>
+          </li>
+
+          {% block s_or_i_notes %}
+          {% endblock %}
+
+          {% block i_updatenotes %}
+          {% endblock %}
+
+          <li><a href="{{ url_for('logout') }}">Logout</a></li>
+
+          <!-- night mode toggle switch -->
+          <li class="nightmode-toggle">&#9790;
+            <label class="switch">
+              <input type="checkbox" id="nightmode-toggle">
+              <span class="slider round"></span>
+            </label>
+          </li>
+        </ul>
+      {% endif %}
     </div>
   </nav>
   
-  <!--header needs to be changed on every signle child html-->
+  <!-- header section -->
   <header>
     {% block pageheader %}
     {% endblock %}
   </header>
 
-  <!--main body part needs to be changed on every signle child html-->
+  <!-- main content section -->
   <main class="home">
     {% block content %}
     {% endblock %}
   </main>
 
+  <!-- footer section -->
   <footer>
-    <p class="linktoschool"><a href="https://web.cs.toronto.edu/">   Department of Computer Science, University of Toronto</a><br>Designed and built with care by Judy Ding, Hillary Tse, and Monica Vergara for CSCB20 &copy; 2025</p>
+    <p class="linktoschool">
+      <a href="https://web.cs.toronto.edu/">Department of Computer Science, University of Toronto</a><br>
+      Designed and built with care by Judy Ding, Hillary Tse, and Monica Vergara for CSCB20 &copy; 2025
+    </p>
     <p><img src="{{ url_for('static', filename='images/UTSClogo.png') }}" alt="UTSCLogo"></p>
   </footer>
+
+  <!-- JavaScript for night mode toggle -->
+  <script>
+    const nightModeToggle = document.getElementById('nightmode-toggle');
+    nightModeToggle.addEventListener('change', function() {
+      document.body.classList.toggle('night-mode', this.checked);
+      // Save preference to localStorage
+      localStorage.setItem('nightMode', this.checked);
+    });
+
+    // Check for saved preference
+    if (localStorage.getItem('nightMode') === 'true') {
+      document.body.classList.add('night-mode');
+      nightModeToggle.checked = true;
+    }
+  </script>
 </body>
 </html>

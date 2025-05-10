@@ -1,0 +1,39 @@
+{% extends "template.html" %}
+
+{% block s_or_i_homepage %}
+  <li><a href="{{ url_for('s_homeafterlogin') }}">Home</a></li>
+{% endblock%}
+
+{% block s_or_i_feedback %}
+  <li><a href="{{ url_for('s_anonfeedback') }}">Anon Feedback</a></li>
+{% endblock%}
+
+{% block s_or_i_marks %}
+  <li><a href="{{ url_for('s_marks') }}">Marks</a></li>
+{% endblock%}
+
+{% block s_or_i_notes %}
+  <li><a href="{{ url_for('s_lectures') }}">Lecture Notes</a></li>
+{% endblock%}
+
+{% block pageheader %}
+    <h1>Lecture Notes</h1>
+{% endblock %}
+
+{% block content %}
+    <h2>Your Lecture Notes</h2>
+
+    <div class="lecture-grid">
+        <div class="header">Week</div>
+        <div class="header">Topic</div>
+        <div class="header">Link to PDF</div>
+
+        {% for note in lecture_notes %}
+        <div>{{ note.week }}</div>
+        <div>{{ note.topic }}</div>
+        <div>
+            <a href="{{ note.url }}" target="_blank">Link to PDF</a>
+        </div>
+        {% endfor %}
+    </div>
+{% endblock %}

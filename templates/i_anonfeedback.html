@@ -1,0 +1,112 @@
+{% extends "template.html" %}
+
+{% block s_or_i_homepage %}
+  <li><a href="{{ url_for('i_homeafterlogin') }}">Home</a></li>
+{% endblock%}
+
+{% block s_or_i_feedback %}
+  <li><a href="{{ url_for('i_anonfeedback') }}">Anon Feedback</a></li>
+{% endblock%}
+
+{% block s_or_i_marks %}
+  <li><a href="{{ url_for('i_marks') }}">Marks</a></li>
+{% endblock%}
+{% block i_updatemarks %}
+  <li><a href="{{ url_for('i_updatemarks') }}">Update Marks</a></li>
+{% endblock %}
+{% block i_remarkreqs %}
+<li><a href="{{ url_for('i_remarkreqs') }}">Remark Requests</a></li>
+{% endblock %}
+
+{% block s_or_i_notes %}
+<li class="dropdown-menu">
+  <a href="#">Lecture Notes</a>
+  <ul>
+    <li><a href="{{ url_for('i_lectures') }}">Lecture Notes</a></li>
+    <li><a href="{{ url_for('i_updatelectures') }}">Update Lecture Notes</a></li> 
+  </ul>
+</li>
+{% endblock%}
+
+{% block pageheader %}
+  <h1>Anonymous Feedback</h1> 
+{% endblock %}
+
+{% block content %}
+    <br>
+    <table class="table">
+        <tr>
+            <th>Feedback ID</th>
+            <th>Instructor ID</th>
+            <th>Teaching Style</th>
+            <th>Teaching Style Feedback</th>
+            <th>Teaching Style Labs</th>
+            <th>Lab Improvement</th>
+            <th>Status</th>
+            <th></th>
+
+
+        </tr>
+        {% for query in query_feedback_result %}
+            <tr>
+               <td>{{ query.feedbackID }}</td>
+               <td>{{ query.instructorID }}</td>
+               <td>{{ query.like_teaching }}</td>
+               <td>{{ query.improvement_teaching }}</td>
+               <td>{{ query.like_labs }}</td>
+               <td>{{ query.improvement_labs }}</td>
+               <td id="status-{{ query.feedbackID }}">{{ query.viewed_status }}</td>
+        <td>
+            <button class="viewed-status" 
+                    data-id="{{ query.feedbackID }}"
+                    data-current="{{ query.viewed_status }}">
+                {% if query.viewed_status == "Viewed" %}
+                    Mark as Not Viewed
+                {% else %}
+                    Mark as Viewed
+                {% endif %}
+            </button>
+        </td>
+            </tr>
+        {% endfor %}
+    </table>
+
+    <script>
+        document.querySelectorAll(".viewed-status").forEach(button => {
+            button.addEventListener("click", function() {
+                // current status
+                const feedbackID = this.getAttribute("data-id");
+                const statusCell = document.getElementById(`status-${feedbackID}`);
+                const currentStatus = this.getAttribute("data-current");
+                
+                // new status
+                const newStatus = currentStatus === "Viewed" ? "Not Viewed" : "Viewed";
+                
+                // update page 
+                statusCell.textContent = newStatus;
+                this.textContent = newStatus === "Viewed" ? "Mark as Not Viewed" : "Mark as Viewed";
+                this.setAttribute("data-current", newStatus);
+                
+                // send update to server 
+                fetch("/update_status", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        feedbackID: feedbackID,
+                        newStatus: newStatus
+                    })
+                }).then(response => {
+                    if (!response.ok) {
+                        alert("Update failed - changes were reverted");
+                        // Revert if failed
+                        statusCell.textContent = currentStatus;
+                        this.textContent = currentStatus === "Viewed" ? "Mark as Not Viewed" : "Mark as Viewed";
+                        this.setAttribute("data-current", currentStatus);
+                    }
+                });
+            });
+        });
+    </script>
+   
+    
+{% endblock content %}
